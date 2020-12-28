@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">이미지 검색</string>
+    <string name="search_title">Search Image</string>
+    <string name="no_response_data">검색 결과가 없습니다.</string>
+</resources>
