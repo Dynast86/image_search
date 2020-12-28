@@ -1,22 +1,21 @@
 package com.cgkim.image_search
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.cgkim.image_search.GridViewAdapter.ViewHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class GridViewAdapter(context: Context, arrayList: ArrayList<ImageItem>?) : BaseAdapter() {
     private var mItems: ArrayList<ImageItem>? = arrayList
-    var glide: RequestManager? = null
+    private var glide: RequestManager? = null
 
     init {
         glide = Glide.with(context)
@@ -75,6 +74,11 @@ class GridViewAdapter(context: Context, arrayList: ArrayList<ImageItem>?) : Base
             ?.into(holder.imageView!!)
         holder.imageView?.setOnClickListener {
             println("item : $item")
+
+            val intent = Intent(parent.context, ImageActivity::class.java).apply {
+                putExtra("data", item)
+            }
+            parent.context.startActivity(intent)
         }
         return view!!
     }
