@@ -1,22 +1,24 @@
-package com.cgkim.image_search
+package com.cgkim.image_search.ui.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.cgkim.image_search.GridViewAdapter.ViewHolder
+import com.cgkim.image_search.R
+import com.cgkim.image_search.data.ImageItem
+import com.cgkim.image_search.ui.ImagePopupActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class GridViewAdapter(context: Context, arrayList: ArrayList<ImageItem>?) : BaseAdapter() {
-    private var mItems: ArrayList<ImageItem>? = arrayList
-    var glide: RequestManager? = null
+class GridViewAdapter(context: Context, items: ArrayList<ImageItem>?) : BaseAdapter() {
+    private var glide: RequestManager? = null
+    private var mItems: ArrayList<ImageItem>? = items
 
     init {
         glide = Glide.with(context)
@@ -37,21 +39,6 @@ class GridViewAdapter(context: Context, arrayList: ArrayList<ImageItem>?) : Base
         return if (mItems != null)
             mItems!![p0].idx
         else 0
-    }
-
-    fun resetItems() {
-        mItems = null
-    }
-
-    fun addItems(arrayList: ArrayList<ImageItem>) {
-        if (mItems == null) mItems = ArrayList()
-
-        for (item: ImageItem in arrayList) {
-            mItems?.add(item)
-        }
-        CoroutineScope(Dispatchers.Main).launch {
-            notifyDataSetChanged()
-        }
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -75,8 +62,28 @@ class GridViewAdapter(context: Context, arrayList: ArrayList<ImageItem>?) : Base
             ?.into(holder.imageView!!)
         holder.imageView?.setOnClickListener {
             println("item : $item")
+
+            val intent = Intent(parent.context, ImagePopupActivity::class.java).apply {
+                putExtra("data", item)
+            }
+            parent.context.startActivity(intent)
         }
         return view!!
+    }
+
+    fun resetItems() {
+        mItems = null
+    }
+
+    fun addItems(arrayList: ArrayList<ImageItem>?) {
+        if (mItems == null) mItems = ArrayList()
+
+        for (item: ImageItem in arrayList!!) {
+            mItems?.add(item)
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            notifyDataSetChanged()
+        }
     }
 
     inner class ViewHolder(context: Context) : View(context) {
