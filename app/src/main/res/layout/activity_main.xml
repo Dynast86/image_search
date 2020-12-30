@@ -40,15 +40,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <GridView
-                android:id="@+id/gridView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:horizontalSpacing="10dp"
-                android:numColumns="3"
                 android:padding="8dp"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="10dp"
                 android:visibility="@{!model.isError ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

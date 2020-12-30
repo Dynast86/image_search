@@ -5,15 +5,17 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.cgkim.image_search.R
 import com.cgkim.image_search.data.ImageItem
 import com.cgkim.image_search.ui.ImagePopupActivity
 
-class GridViewAdapter(context: Context, items: ArrayList<ImageItem>?) : BaseAdapter() {
+
+class CustomRecyclerView(context: Context, items: ArrayList<ImageItem>?) :
+    RecyclerView.Adapter<CustomRecyclerView.ViewHolder>() {
     private var glide: RequestManager? = null
     private var mItems: ArrayList<ImageItem>? = items
 
@@ -21,49 +23,47 @@ class GridViewAdapter(context: Context, items: ArrayList<ImageItem>?) : BaseAdap
         glide = Glide.with(context)
     }
 
-    override fun getCount(): Int {
-        return mItems?.size ?: 0
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var imageView: ImageView? = itemView.findViewById(R.id.image)
     }
 
-    override fun getItem(p0: Int): ImageItem? {
+    private fun getItem(p0: Int): ImageItem? {
         return if (mItems != null)
             mItems!![p0]
         else
             null
     }
 
-    override fun getItemId(p0: Int): Long {
-        return if (mItems != null)
-            mItems!![p0].idx
-        else 0
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.gridview_item, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var view = convertView
-        val holder: View
-        if (view == null) {
-            view =
-                LayoutInflater.from(parent.context).inflate(R.layout.gridview_item, parent, false)
-            holder = ViewHolder(parent.context)
-            holder.imageView = view?.findViewById(R.id.image)
-            view?.tag = holder
-        } else {
-            holder = view.tag as ViewHolder
-        }
-
-        val item = getItem(position)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item: ImageItem? = getItem(position)
 
         glide?.load(item?.thumbnailUrl)
             ?.placeholder(R.mipmap.ic_launcher)
             ?.fitCenter()
             ?.into(holder.imageView!!)
         holder.imageView?.setOnClickListener {
-            val intent = Intent(parent.context, ImagePopupActivity::class.java).apply {
+            val context = holder.itemView.context
+            val intent = Intent(context, ImagePopupActivity::class.java).apply {
                 putExtra("data", item)
             }
-            parent.context.startActivity(intent)
+            context.startActivity(intent)
         }
-        return view!!
+    }
+
+    override fun getItemCount(): Int {
+        return mItems?.size ?: 0
+    }
+
+    override fun getItemId(p0: Int): Long {
+        return if (mItems != null)
+            mItems!![p0].idx
+        else 0
     }
 
     fun resetItems() {
@@ -81,9 +81,5 @@ class GridViewAdapter(context: Context, items: ArrayList<ImageItem>?) : BaseAdap
             }
         }
         notifyDataSetChanged()
-    }
-
-    inner class ViewHolder(context: Context) : View(context) {
-        var imageView: ImageView? = null
     }
 }

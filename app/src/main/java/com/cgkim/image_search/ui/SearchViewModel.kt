@@ -8,7 +8,9 @@ import com.cgkim.image_search.data.ImageApi
 import com.cgkim.image_search.data.ImageModel
 import com.cgkim.image_search.data.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchViewModel : ViewModel() {
 
@@ -29,32 +31,32 @@ class SearchViewModel : ViewModel() {
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-//            println("request")
-            val result = try {
-                ImageApi().requestQuery(query, page)
-            } catch (e: Exception) {
-                Result.Error(Exception("Network request failed"))
-            }
-
-            launch(Dispatchers.Main) {
-                when (result) {
-                    is Result.Success<ImageModel?> -> {
-                        val imageModel = result.data
-                        if (imageModel?.totalCount == 0) {
-                            emptyData()
-                        } else {
-                            isError(false)
-                            setImageItems(imageModel)
-                        }
-                    }
-                    else -> {
-                        val message = (result as Result.Error).exception.message
-                        errorMessage(message.toString())
+        viewModelScope.launch {
+            val result: Result<ImageModel?> =
+                withContext(Dispatchers.IO) {
+                    try {
+                        ImageApi().requestQuery(query, page)
+                    } catch (e: Exception) {
+                        Result.Error(Exception("Network request failed"))
                     }
                 }
-                loading(false)
+
+            when (result) {
+                is Result.Success<ImageModel?> -> {
+                    val imageModel = result.data
+                    if (imageModel?.totalCount == 0) {
+                        emptyData()
+                    } else {
+                        isError(false)
+                        setImageItems(imageModel)
+                    }
+                }
+                else -> {
+                    val message = (result as Result.Error).exception.message
+                    errorMessage(message.toString())
+                }
             }
+            loading(false)
         }
     }
 
