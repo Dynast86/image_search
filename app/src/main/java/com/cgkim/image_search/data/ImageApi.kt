@@ -1,6 +1,7 @@
 package com.cgkim.image_search.data
 
 import com.cgkim.image_search.BuildConfig
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.json.JSONArray
 import org.json.JSONObject
@@ -14,7 +15,8 @@ import java.net.URL
 class ImageApi {
 
     fun requestQuery(query: String?, page: Int): Result<ImageModel?> {
-        val url = URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
+        val url =
+            URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
 
         val basicAuth = "KakaoAK " + BuildConfig.kakaoAK
 
@@ -31,6 +33,10 @@ class ImageApi {
                 Result.Error(Exception(responseMessage))
         }
         return Result.Error(Exception("Cannot open HttpURLConnection"))
+    }
+
+    fun fetch(query: String?, page: Int): Flow<ImageModel> = flow {
+        
     }
 
     private fun parse(input: InputStream): ImageModel? {

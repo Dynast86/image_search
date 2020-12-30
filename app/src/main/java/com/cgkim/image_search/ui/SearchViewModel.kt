@@ -8,7 +8,6 @@ import com.cgkim.image_search.data.ImageApi
 import com.cgkim.image_search.data.ImageModel
 import com.cgkim.image_search.data.Result
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
