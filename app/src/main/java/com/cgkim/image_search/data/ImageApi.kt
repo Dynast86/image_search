@@ -35,8 +35,30 @@ class ImageApi {
         return Result.Error(Exception("Cannot open HttpURLConnection"))
     }
 
-    fun fetch(query: String?, page: Int): Flow<ImageModel> = flow {
-        
+    fun fetch(query: String?, page: Int): Flow<ImageModel?> = flow {
+        val url =
+            URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
+
+        val basicAuth = "KakaoAK " + BuildConfig.kakaoAK
+
+        (url.openConnection() as? HttpURLConnection)?.run {
+            requestMethod = "GET"
+            setRequestProperty("Content-Type", "application/json; utf-8")
+            setRequestProperty("Accept", "application/json")
+            setRequestProperty("Authorization", basicAuth)
+            doOutput = true
+
+            if (responseCode == 200) {
+                emit(parse(inputStream))
+//                Result.Success(parse(inputStream))
+            } else {
+                error(Exception(responseMessage))
+            }
+//                Result.Error(Exception(responseMessage))
+        }
+        error(Exception("Cannot open HttpURLConnection"))
+//        Result.Error(Exception("Cannot open HttpURLConnection"))
+
     }
 
     private fun parse(input: InputStream): ImageModel? {
