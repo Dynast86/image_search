@@ -15,28 +15,6 @@ import java.net.URL
 
 class ImageApi {
 
-    fun requestQuery(query: String?, page: Int): Result<ImageRepository> {
-        val url =
-            URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
-
-        val basicAuth = "KakaoAK " + BuildConfig.kakaoAK
-
-        (url.openConnection() as? HttpURLConnection)?.run {
-            requestMethod = "GET"
-            setRequestProperty("Content-Type", "application/json; utf-8")
-            setRequestProperty("Accept", "application/json")
-            setRequestProperty("Authorization", basicAuth)
-            doOutput = true
-
-            return if (responseCode == 200) {
-                Result.Success(parse(inputStream))
-            } else
-                Result.Error(Exception(responseMessage))
-        }
-        return Result.Error(Exception("Cannot open HttpURLConnection"))
-    }
-
-
     suspend fun fetch(query: String?, page: Int): Flow<ImageRepository> = flow {
         val url =
             URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
