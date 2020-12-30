@@ -3,7 +3,7 @@ package com.cgkim.image_search.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
+import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.GridView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +16,8 @@ import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.GridViewAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
+
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
 
@@ -26,11 +26,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private var mGridView: GridView? = null
+    private lateinit var mEditText: EditText
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
     private val searchViewModel: SearchViewModel by lazy {
         ViewModelProvider(this).get(SearchViewModel::class.java)
     }
+
+    private var page = 1
+    private var lastItemVisibleFlag = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,31 +49,54 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
 
     private fun initView() {
         mGridView = findViewById(R.id.gridView)
+        mEditText = findViewById(R.id.search_edit)
         mGridView?.adapter = GridViewAdapter(this, null)
+        mGridView?.setOnScrollListener(onScrollListener)
+        mEditText.setOnEditorActionListener { _, _, _ ->
+            false
+        }
+    }
+
+    private val onScrollListener = object : AbsListView.OnScrollListener {
+        override fun onScrollStateChanged(p0: AbsListView?, state: Int) {
+            if (state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+                && lastItemVisibleFlag
+            ) {
+                val model = searchViewModel
+                val imageModel = model.imageItems.value
+                if (imageModel?.isEnd == false) {
+                    page++
+
+                    model.request(mEditText.editableText.toString(), page)
+                }
+            }
+        }
+
+        override fun onScroll(view: AbsListView?, firstCnt: Int, visibleCnt: Int, totalCnt: Int) {
+            lastItemVisibleFlag = (totalCnt > 0) && (firstCnt + visibleCnt >= totalCnt)
+        }
     }
 
     private val itemObserver = Observer<ImageModel> { item ->
+//        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val repoAdapter: GridViewAdapter = mGridView?.adapter as GridViewAdapter
+        if (page == 1) repoAdapter.resetItems()
 
-        if (item.imageItem != null) {
-            repoAdapter.resetItems()
-            repoAdapter.addItems(item.imageItem)
-        }
+        repoAdapter.addItems(item.imageItem)
     }
 
     private fun initObserve() {
         searchViewModel.imageItems.observe(this, itemObserver)
         searchViewModel.editSearchTxt.observe(this, {
-            if (TextUtils.isEmpty(it)) return@observe
-
             Handler(Looper.getMainLooper()).postDelayed({
                 try {
-                    val editText = findViewById<EditText>(R.id.search_edit)
-                    if (editText.editableText.toString() != "" && it == editText.editableText.toString()) {
-                        searchViewModel.request(it)
+                    page = 1
+                    if (it == mEditText.editableText.toString()) {
+                        searchViewModel.request(mEditText.editableText.toString(), page)
                     }
                 } catch (e: Exception) {
-                    println("error : " + e.printStackTrace())
+                    e.printStackTrace()
+//                    println("error : " + e.printStackTrace())
                 }
             }, DELAY)
         })

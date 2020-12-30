@@ -12,8 +12,8 @@ import java.net.URL
 
 class ImageApi {
 
-    fun requestQuery(query: String?): Result<ImageModel?> {
-        val url = URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30")
+    fun requestQuery(query: String?, page: Int): Result<ImageModel?> {
+        val url = URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
 
         val basicAuth = "KakaoAK " + BuildConfig.kakaoAK
 
@@ -46,7 +46,6 @@ class ImageApi {
         val document: JSONArray?
         val meta: JSONObject?
         try {
-//            println("response : $response")
             val res = JSONObject(response.toString())
             document = res.getJSONArray("documents")
             meta = res.getJSONObject("meta")

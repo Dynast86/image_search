@@ -15,20 +15,20 @@
             type="com.cgkim.image_search.ui.SearchViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/search_edit"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:imeOptions="actionSearch"
             android:inputType="text"
             android:text="@={model.editSearchTxt}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,44 +36,49 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/search_title" />
 
-        <ProgressBar
-            android:id="@+id/loading_progress"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="@{model.isLoading ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_edit" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/error_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{model.errorMessage}"
-            android:visibility="@{!TextUtils.isEmpty(model.errorMessage) ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_edit" />
+            <GridView
+                android:id="@+id/gridView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:horizontalSpacing="10dp"
+                android:numColumns="3"
+                android:padding="8dp"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp"
+                android:visibility="@{!model.isError ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <GridView
-            android:id="@+id/gridView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:horizontalSpacing="10dp"
-            android:numColumns="3"
-            android:padding="8dp"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_edit">
+            <TextView
+                android:id="@+id/error_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{TextUtils.isEmpty(model.errorMessage) ? @string/no_response_data : model.errorMessage }"
+                android:visibility="@{model.isError ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/no_response_data" />
 
-        </GridView>
+            <ProgressBar
+                android:id="@+id/loading_progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{model.isLoading ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </layout>

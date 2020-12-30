@@ -1,5 +1,6 @@
 package com.cgkim.image_search.ui
 
+import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,16 +17,22 @@ class SearchViewModel : ViewModel() {
     }
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val errorMessage: MutableLiveData<String> = MutableLiveData()
+    val isError: MutableLiveData<Boolean> = MutableLiveData()
     val imageItems: MutableLiveData<ImageModel> = MutableLiveData()
 
-
-    fun request(query: String) {
+    fun request(query: String, page: Int) {
+        isError(false)
         loading(true)
 
+        if (TextUtils.isEmpty(query)) {
+            emptyData()
+            return
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
-            println("request")
+//            println("request")
             val result = try {
-                ImageApi().requestQuery(query)
+                ImageApi().requestQuery(query, page)
             } catch (e: Exception) {
                 Result.Error(Exception("Network request failed"))
             }
@@ -34,7 +41,12 @@ class SearchViewModel : ViewModel() {
                 when (result) {
                     is Result.Success<ImageModel?> -> {
                         val imageModel = result.data
-                        setImageItems(imageModel)
+                        if (imageModel?.totalCount == 0) {
+                            emptyData()
+                        } else {
+                            isError(false)
+                            setImageItems(imageModel)
+                        }
                     }
                     else -> {
                         val message = (result as Result.Error).exception.message
@@ -48,7 +60,12 @@ class SearchViewModel : ViewModel() {
 
     init {
         loading(false)
+        isError(false)
         errorMessage(null)
+    }
+
+    private fun resetItems() {
+        imageItems.value = ImageModel(null, null, null, null)
     }
 
     private fun loading(bool: Boolean) {
@@ -56,6 +73,9 @@ class SearchViewModel : ViewModel() {
     }
 
     private fun errorMessage(error: String?) {
+        if (error != null) {
+            isError(true)
+        }
         errorMessage.value = error
     }
 
@@ -64,5 +84,15 @@ class SearchViewModel : ViewModel() {
             return
 
         imageItems.value = items
+    }
+
+    private fun isError(bool: Boolean) {
+        isError.value = bool
+    }
+
+    private fun emptyData() {
+        loading(false)
+        isError(true)
+        resetItems()
     }
 }

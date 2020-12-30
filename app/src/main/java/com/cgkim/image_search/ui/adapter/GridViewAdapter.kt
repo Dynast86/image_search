@@ -12,9 +12,6 @@ import com.bumptech.glide.RequestManager
 import com.cgkim.image_search.R
 import com.cgkim.image_search.data.ImageItem
 import com.cgkim.image_search.ui.ImagePopupActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class GridViewAdapter(context: Context, items: ArrayList<ImageItem>?) : BaseAdapter() {
     private var glide: RequestManager? = null
@@ -61,8 +58,6 @@ class GridViewAdapter(context: Context, items: ArrayList<ImageItem>?) : BaseAdap
             ?.fitCenter()
             ?.into(holder.imageView!!)
         holder.imageView?.setOnClickListener {
-            println("item : $item")
-
             val intent = Intent(parent.context, ImagePopupActivity::class.java).apply {
                 putExtra("data", item)
             }
@@ -78,12 +73,14 @@ class GridViewAdapter(context: Context, items: ArrayList<ImageItem>?) : BaseAdap
     fun addItems(arrayList: ArrayList<ImageItem>?) {
         if (mItems == null) mItems = ArrayList()
 
-        for (item: ImageItem in arrayList!!) {
-            mItems?.add(item)
-        }
-        CoroutineScope(Dispatchers.Main).launch {
+        if (arrayList == null) {
             notifyDataSetChanged()
+        } else {
+            for (item: ImageItem in arrayList) {
+                mItems?.add(item)
+            }
         }
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(context: Context) : View(context) {
