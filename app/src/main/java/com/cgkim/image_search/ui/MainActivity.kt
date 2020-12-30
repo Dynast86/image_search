@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cgkim.image_search.R
-import com.cgkim.image_search.data.ImageModel
+import com.cgkim.image_search.data.ImageRepository
 import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.CustomRecyclerView
 
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             if (!recyclerView.canScrollVertically(1)) {
                 val model = searchViewModel
                 val imageModel = model.imageItems.value
-                if (imageModel?.isEnd == false) {
+                if (imageModel?.meta?.is_end == false) {
                     page++
 
                     model.request(mEditText.editableText.toString(), page)
@@ -66,11 +66,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val itemObserver = Observer<ImageModel> { item ->
+    private val itemObserver = Observer<ImageRepository> { item ->
         val repo: CustomRecyclerView = mRecyclerView.adapter as CustomRecyclerView
         if (page == 1) repo.resetItems()
 
-        repo.addItems(item.imageItem)
+        repo.addItems(item.documents)
     }
 
     private fun initObserve() {

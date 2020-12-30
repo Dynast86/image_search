@@ -6,7 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.cgkim.image_search.R
-import com.cgkim.image_search.data.ImageItem
+import com.cgkim.image_search.data.ImageDocument
 import com.cgkim.image_search.databinding.ActivityImagePopupBinding
 
 class ImagePopupActivity : AppCompatActivity(), View.OnClickListener {
@@ -27,19 +27,19 @@ class ImagePopupActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initData() {
-        val item: ImageItem? = intent.extras?.get("data") as ImageItem?
+        val document: ImageDocument? = intent.extras?.get("data") as ImageDocument?
 
         imageViewModel.displaySiteName.apply {
-            if (!TextUtils.isEmpty(item?.displaySiteName)) {
-                value = getString(R.string.display_site_name, item?.displaySiteName)
+            if (!TextUtils.isEmpty(document?.display_sitename)) {
+                value = getString(R.string.display_site_name, document?.display_sitename)
             }
         }
         imageViewModel.dateTime.apply {
-            if (!TextUtils.isEmpty(item?.dateTime)) {
-                value = getString(R.string.date_time, item?.dateTime)
+            if (!TextUtils.isEmpty(document?.datetime)) {
+                value = getString(R.string.date_time, document?.datetime)
             }
         }
-        imageViewModel.imgUrl.value = item?.imageUrl
+        imageViewModel.imgUrl.value = document?.image_url
     }
 
     override fun onClick(p0: View?) {

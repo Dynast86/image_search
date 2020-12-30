@@ -4,15 +4,14 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ImageItem(
-    var idx: Long,
+data class ImageDocument(
     var collection: String,
-    var thumbnailUrl: String,
-    var imageUrl: String,
+    var thumbnail_url: String,
+    var image_url: String,
     var width: Int,
     var height: Int,
 
-    var displaySiteName: String,
-    var docUrl: String,
-    var dateTime: String,
+    var display_sitename: String,
+    var doc_url: String,
+    var datetime: String,
 ) : Parcelable

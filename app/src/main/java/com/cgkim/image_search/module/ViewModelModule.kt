@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable.LARGE
 import com.bumptech.glide.Glide
-import com.cgkim.image_search.data.ImageItem
+import com.cgkim.image_search.data.ImageDocument
 
 object ViewModelModule {
 
@@ -29,8 +29,8 @@ object ViewModelModule {
     }
 
     @JvmStatic
-    @BindingAdapter("items")
-    fun setBindItem(view: GridView, items: MutableLiveData<ArrayList<ImageItem>>) {
+    @BindingAdapter("itemList")
+    fun setBindItem(view: GridView, items: MutableLiveData<ArrayList<ImageDocument>>) {
         view.adapter?.run {
 //            if (this is GridViewAdapter) {
 //                this.addItems(items)

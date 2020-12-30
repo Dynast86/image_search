@@ -61,7 +61,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-
+    // GSON
+    implementation 'com.google.code.gson:gson:2.8.6'
     // 의존성 주입(KOIN)
 //    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 //    testImplementation "org.koin:koin-test:$koin_version"
