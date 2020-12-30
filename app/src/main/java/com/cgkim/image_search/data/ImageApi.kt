@@ -1,8 +1,11 @@
 package com.cgkim.image_search.data
 
 import com.cgkim.image_search.BuildConfig
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -35,33 +38,33 @@ class ImageApi {
         return Result.Error(Exception("Cannot open HttpURLConnection"))
     }
 
-    fun fetch(query: String?, page: Int): Flow<ImageModel?> = flow {
+    fun fetch(query: String?, page: Int): Flow<ImageModel> = flow {
         val url =
             URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
 
         val basicAuth = "KakaoAK " + BuildConfig.kakaoAK
+        val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+        try {
+            urlConnection.requestMethod = "GET"
+            urlConnection.setRequestProperty("Content-Type", "application/json; utf-8")
+            urlConnection.setRequestProperty("Accept", "application/json")
+            urlConnection.setRequestProperty("Authorization", basicAuth)
+            urlConnection.doOutput = true
 
-        (url.openConnection() as? HttpURLConnection)?.run {
-            requestMethod = "GET"
-            setRequestProperty("Content-Type", "application/json; utf-8")
-            setRequestProperty("Accept", "application/json")
-            setRequestProperty("Authorization", basicAuth)
-            doOutput = true
-
-            if (responseCode == 200) {
-                emit(parse(inputStream))
-//                Result.Success(parse(inputStream))
+            if (urlConnection.responseCode == 200) {
+                emit(parse(urlConnection.inputStream))
             } else {
-                error(Exception(responseMessage))
+                throw Exception(urlConnection.responseMessage)
             }
-//                Result.Error(Exception(responseMessage))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw Exception("Cannot open HttpURLConnection")
+        } finally {
+            urlConnection.disconnect()
         }
-        error(Exception("Cannot open HttpURLConnection"))
-//        Result.Error(Exception("Cannot open HttpURLConnection"))
+    }.flowOn(Dispatchers.IO)
 
-    }
-
-    private fun parse(input: InputStream): ImageModel? {
+    private fun parse(input: InputStream): ImageModel {
         val response = StringBuffer()
         BufferedReader(InputStreamReader(input)).use {
             var inputLine = it.readLine()
@@ -110,7 +113,7 @@ class ImageApi {
             )
         } catch (e: Exception) {
             e.printStackTrace()
-            return null
+            throw Exception(e.message)
         }
     }
 }

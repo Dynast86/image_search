@@ -11,8 +11,8 @@ import com.cgkim.image_search.data.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 class SearchViewModel : ViewModel() {
 
@@ -34,42 +34,20 @@ class SearchViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-//            val result: Result<ImageModel?> =
-//                withContext(Dispatchers.IO) {
-//                    try {
-//                        ImageApi().requestQuery(query, page)
-//                    } catch (e: Exception) {
-//                        Result.Error(Exception("Network request failed"))
-//                    }
-//                }
-
-            withContext(Dispatchers.IO) {
-                try {
-                    ImageApi().fetch(query, page).collect {
-
+            ImageApi().fetch(query, page)
+                .catch { cause ->
+                    val message = cause.message
+                    errorMessage(message.toString())
+                }.onCompletion {
+                    loading(false)
+                }.collect {
+                    if (it.totalCount == 0) {
+                        emptyData()
+                    } else {
+                        isError(false)
+                        setImageItems(it)
                     }
-                } catch (e: Exception) {
-
                 }
-
-            }
-
-//            when (result) {
-//                is Result.Success<ImageModel?> -> {
-//                    val imageModel = result.data
-//                    if (imageModel?.totalCount == 0) {
-//                        emptyData()
-//                    } else {
-//                        isError(false)
-//                        setImageItems(imageModel)
-//                    }
-//                }
-//                else -> {
-//                    val message = (result as Result.Error).exception.message
-//                    errorMessage(message.toString())
-//                }
-//            }
-            loading(false)
         }
     }
 
