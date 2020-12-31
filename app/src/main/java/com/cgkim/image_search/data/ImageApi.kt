@@ -13,6 +13,10 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class ImageApi {
 
+    companion object {
+        const val EMPTY_ITEM = "empty_item"
+    }
+
     @ExperimentalCoroutinesApi
     fun fetch(query: String, page: Int) = callbackFlow<ImageModel> {
         ImageRepository.service.getImageList(query, page).enqueue(object : Callback<ImageModel> {
@@ -21,7 +25,7 @@ class ImageApi {
                 response: Response<ImageModel>
             ) {
                 if (response.isSuccessful) {
-                    response.body()?.let { offer(it) } ?: cancel("empty_item")
+                    response.body()?.let { offer(it) } ?: cancel(EMPTY_ITEM)
                 } else {
                     cancel("${response.code()} + ${response.errorBody()}")
                 }

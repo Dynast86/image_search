@@ -3,6 +3,8 @@ package com.cgkim.image_search.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -15,6 +17,7 @@ import com.cgkim.image_search.data.ImageModel
 import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.CustomRecyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
@@ -51,6 +54,19 @@ class MainActivity : AppCompatActivity() {
             setHasFixedSize(true)
         }
         mRecyclerView.addOnScrollListener(onScrollListener)
+        mEditText.setOnEditorActionListener { v, actionId, _ ->
+
+            /* Android Bug
+            https://stackoverflow.com/questions/34805627/android-bug-recyclerview-opens-up-full-keyboard-after-edittexts-keypads-done
+             */
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
+                mEditText.clearFocus()
+                val imm: InputMethodManager =
+                    v.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+            }
+            true
+        }
     }
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {

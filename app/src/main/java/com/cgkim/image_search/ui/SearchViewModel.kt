@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cgkim.image_search.data.ImageApi
+import com.cgkim.image_search.data.ImageApi.Companion.EMPTY_ITEM
 import com.cgkim.image_search.data.ImageModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
@@ -36,7 +37,7 @@ class SearchViewModel : ViewModel() {
             ImageApi().fetch(query, page)
                 .catch { cause ->
                     val message = cause.message
-                    if (message == "empty_item") emptyData()
+                    if (message == EMPTY_ITEM) emptyData()
                     else errorMessage(message)
                 }.onCompletion {
                     loading(false)
