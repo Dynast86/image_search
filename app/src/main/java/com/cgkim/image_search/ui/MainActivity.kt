@@ -14,8 +14,9 @@ import com.cgkim.image_search.R
 import com.cgkim.image_search.data.ImageRepository
 import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.CustomRecyclerView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     companion object {

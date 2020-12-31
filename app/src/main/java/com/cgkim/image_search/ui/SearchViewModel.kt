@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cgkim.image_search.data.ImageApi
 import com.cgkim.image_search.data.ImageRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
@@ -21,6 +22,7 @@ class SearchViewModel : ViewModel() {
     val isError: MutableLiveData<Boolean> = MutableLiveData()
     val imageItems: MutableLiveData<ImageRepository> = MutableLiveData()
 
+    @ExperimentalCoroutinesApi
     fun request(query: String, page: Int) {
         isError(false)
         loading(true)
@@ -34,7 +36,8 @@ class SearchViewModel : ViewModel() {
             ImageApi().fetch(query, page)
                 .catch { cause ->
                     val message = cause.message
-                    errorMessage(message.toString())
+                    if (message == "empty_item") emptyData()
+                    else errorMessage(message)
                 }.onCompletion {
                     loading(false)
                 }.collect {
