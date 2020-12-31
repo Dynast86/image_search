@@ -16,5 +16,5 @@ interface KakaoService {
         @Query("page") page: Int,
         @Nullable
         @Query("size") size: Int = 30
-    ): Call<ImageRepository>
+    ): Call<ImageModel>
 }

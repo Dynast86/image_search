@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cgkim.image_search.data.ImageApi
-import com.cgkim.image_search.data.ImageRepository
+import com.cgkim.image_search.data.ImageModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -20,7 +20,7 @@ class SearchViewModel : ViewModel() {
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val errorMessage: MutableLiveData<String> = MutableLiveData()
     val isError: MutableLiveData<Boolean> = MutableLiveData()
-    val imageItems: MutableLiveData<ImageRepository> = MutableLiveData()
+    val imageItems: MutableLiveData<ImageModel> = MutableLiveData()
 
     @ExperimentalCoroutinesApi
     fun request(query: String, page: Int) {
@@ -58,7 +58,7 @@ class SearchViewModel : ViewModel() {
     }
 
     private fun resetItems() {
-        imageItems.value = ImageRepository(null, null)
+        imageItems.value = ImageModel(null, null)
     }
 
     private fun loading(bool: Boolean) {
@@ -72,7 +72,7 @@ class SearchViewModel : ViewModel() {
         errorMessage.value = error
     }
 
-    private fun setImageItems(items: ImageRepository?) {
+    private fun setImageItems(items: ImageModel?) {
         if (items == null)
             return
 
