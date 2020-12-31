@@ -11,11 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cgkim.image_search.R
-import com.cgkim.image_search.data.ImageRepository
+import com.cgkim.image_search.data.ImageModel
 import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.CustomRecyclerView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     companion object {
@@ -76,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         return model?.meta?.is_end != null
     }
 
-    private val itemObserver = Observer<ImageRepository> { item ->
+    private val itemObserver = Observer<ImageModel> { item ->
         val repo: CustomRecyclerView = mRecyclerView.adapter as CustomRecyclerView
         if (page == 1) repo.resetItems()
 

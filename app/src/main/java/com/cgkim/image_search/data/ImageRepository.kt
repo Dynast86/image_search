@@ -1,10 +1,19 @@
 package com.cgkim.image_search.data
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.cgkim.image_search.BuildConfig
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-@Parcelize
-data class ImageRepository(
-    var meta: ImageMeta?,
-    var documents: ArrayList<ImageDocument>?
-) : Parcelable
+object ImageRepository {
+
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.host)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val service: KakaoService by lazy {
+        retrofit.create(KakaoService::class.java)
+    }
+}

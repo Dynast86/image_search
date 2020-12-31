@@ -1,57 +1,38 @@
 package com.cgkim.image_search.data
 
-import com.cgkim.image_search.BuildConfig
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.coroutines.cancellation.CancellationException
 
 class ImageApi {
 
-    suspend fun fetch(query: String?, page: Int): Flow<ImageRepository> = flow {
-        val url =
-            URL(BuildConfig.host + BuildConfig.url + "?query=" + query + "&size=30" + "&page=" + page)
-
-        val basicAuth = "KakaoAK " + BuildConfig.kakaoAK
-        val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        try {
-            urlConnection.requestMethod = "GET"
-            urlConnection.setRequestProperty("Content-Type", "application/json; utf-8")
-            urlConnection.setRequestProperty("Accept", "application/json")
-            urlConnection.setRequestProperty("Authorization", basicAuth)
-            urlConnection.doOutput = true
-
-            if (urlConnection.responseCode == 200) {
-                emit(parse(urlConnection.inputStream))
-            } else {
-                throw Exception(urlConnection.responseMessage)
+    @ExperimentalCoroutinesApi
+    fun fetch(query: String, page: Int) = callbackFlow<ImageModel> {
+        ImageRepository.service.getImageList(query, page).enqueue(object : Callback<ImageModel> {
+            override fun onResponse(
+                call: Call<ImageModel>,
+                response: Response<ImageModel>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.let { offer(it) } ?: cancel("empty_item")
+                } else {
+                    cancel("${response.code()} + ${response.errorBody()}")
+                }
+                close()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw Exception("Cannot open HttpURLConnection")
-        } finally {
-            urlConnection.disconnect()
-        }
+
+            override fun onFailure(call: Call<ImageModel>, t: Throwable) {
+                cancel(CancellationException(t.message, t))
+                close()
+            }
+        })
+        awaitClose()
     }.flowOn(Dispatchers.IO)
-
-    private fun parse(input: InputStream): ImageRepository {
-        val response = StringBuffer()
-        BufferedReader(InputStreamReader(input)).use {
-            var inputLine = it.readLine()
-            while (inputLine != null) {
-                response.append(inputLine)
-                inputLine = it.readLine()
-            }
-            it.close()
-        }
-
-        return Gson().fromJson(response.toString(), ImageRepository::class.java)
-    }
 }

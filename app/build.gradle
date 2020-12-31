@@ -19,7 +19,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "host", '"https://dapi.kakao.com"'
-        buildConfigField "String", "url", '"/v2/search/image"'
         buildConfigField "String", "kakaoAK", '"07470f5f7a9b0aae0d7abd234804d64e"'
     }
 
@@ -57,12 +56,15 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
 
+    // 통신(RETROFIT2)
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
     // 이미지로드(GLIDE)
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     // GSON
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     // 의존성 주입(KOIN)
 //    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 //    testImplementation "org.koin:koin-test:$koin_version"

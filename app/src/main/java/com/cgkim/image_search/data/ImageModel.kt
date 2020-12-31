@@ -4,6 +4,19 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+data class ImageModel(
+    var meta: ImageMeta?,
+    var documents: ArrayList<ImageDocument>?
+) : Parcelable
+
+@Parcelize
+data class ImageMeta(
+    var total_count: Int?,
+    var pageable_count: Int?,
+    var is_end: Boolean?,
+) : Parcelable
+
+@Parcelize
 data class ImageDocument(
     var collection: String,
     var thumbnail_url: String,
