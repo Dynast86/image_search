@@ -53,17 +53,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (!recyclerView.canScrollVertically(1)) {
-                val model = searchViewModel
-                val imageModel = model.imageItems.value
-                if (imageModel?.meta?.is_end == false) {
-                    page++
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
 
+            val layoutManager = recyclerView.layoutManager
+
+            if (hasNextPage()) {
+                val lastVisibleItem =
+                    (layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
+
+                if (layoutManager.itemCount <= lastVisibleItem + 3) {
+                    page++
+                    val model = searchViewModel
                     model.request(mEditText.editableText.toString(), page)
                 }
             }
         }
+    }
+
+    private fun hasNextPage(): Boolean {
+        val model = searchViewModel.imageItems.value
+        return model?.meta?.is_end != null
     }
 
     private val itemObserver = Observer<ImageRepository> { item ->

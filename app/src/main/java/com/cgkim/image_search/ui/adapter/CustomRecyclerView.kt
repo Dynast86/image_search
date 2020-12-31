@@ -24,7 +24,21 @@ class CustomRecyclerView(context: Context, documents: ArrayList<ImageDocument>?)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageView: ImageView? = itemView.findViewById(R.id.image)
+        private var imageView: ImageView? = itemView.findViewById(R.id.image)
+
+        fun bind(item: ImageDocument?) {
+            glide?.load(item?.thumbnail_url)
+                ?.placeholder(R.mipmap.ic_launcher)
+                ?.fitCenter()
+                ?.into(imageView!!)
+            imageView?.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, ImagePopupActivity::class.java).apply {
+                    putExtra("data", item)
+                }
+                context.startActivity(intent)
+            }
+        }
     }
 
     private fun getItem(p0: Int): ImageDocument? {
@@ -41,19 +55,7 @@ class CustomRecyclerView(context: Context, documents: ArrayList<ImageDocument>?)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val document: ImageDocument? = getItem(position)
-
-        glide?.load(document?.thumbnail_url)
-            ?.placeholder(R.mipmap.ic_launcher)
-            ?.fitCenter()
-            ?.into(holder.imageView!!)
-        holder.imageView?.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, ImagePopupActivity::class.java).apply {
-                putExtra("data", document)
-            }
-            context.startActivity(intent)
-        }
+        holder.bind(getItem(position))
     }
 
     override fun getItemCount(): Int {
@@ -61,9 +63,6 @@ class CustomRecyclerView(context: Context, documents: ArrayList<ImageDocument>?)
     }
 
     override fun getItemId(p0: Int): Long {
-//        return if (mItems != null)
-//            mItems!![p0].idx
-//        else 0
         return 0
     }
 
