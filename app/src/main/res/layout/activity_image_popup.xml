@@ -12,7 +12,7 @@
         <import type="android.text.TextUtils" />
 
         <variable
-            name="imageModel"
+            name="model"
             type="com.cgkim.image_search.ui.ImageViewModel" />
     </data>
 
@@ -34,7 +34,7 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    imageUrl="@{imageModel.imgUrl}"
+                    imageUrl="@{model.imgUrl}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
@@ -49,8 +49,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:padding="2dp"
-                    android:text="@{imageModel.displaySiteName}"
-                    android:visibility="@{!TextUtils.isEmpty(imageModel.displaySiteName) ? View.VISIBLE : View.GONE}"
+                    android:text="@{model.displaySiteName}"
+                    android:visibility="@{!TextUtils.isEmpty(model.displaySiteName) ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"
@@ -62,8 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:padding="2dp"
-                    android:text="@{imageModel.dateTime}"
-                    android:visibility="@{!TextUtils.isEmpty(imageModel.dateTime) ? View.VISIBLE : View.GONE}"
+                    android:text="@{model.dateTime}"
+                    android:visibility="@{!TextUtils.isEmpty(model.dateTime) ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

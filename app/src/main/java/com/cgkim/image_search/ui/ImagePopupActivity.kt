@@ -15,12 +15,9 @@ class ImagePopupActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DataBindingUtil.setContentView<ActivityImagePopupBinding>(
-            this,
-            R.layout.activity_image_popup
-        ).apply {
+        DataBindingUtil.setContentView<ActivityImagePopupBinding>(this, R.layout.activity_image_popup).apply {
             lifecycleOwner = this@ImagePopupActivity
-            imageModel = imageViewModel
+            model = imageViewModel
         }
 
         initData()
