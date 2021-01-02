@@ -4,8 +4,8 @@ import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cgkim.image_search.data.ImageApi
 import com.cgkim.image_search.data.ImageApi.Companion.EMPTY_ITEM
+import com.cgkim.image_search.data.ImageApiInterface
 import com.cgkim.image_search.data.ImageModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(private val api: ImageApiInterface) : ViewModel() {
 
     val editSearchTxt: MutableLiveData<String> by lazy {
         MutableLiveData()
@@ -25,6 +25,9 @@ class SearchViewModel : ViewModel() {
 
     @ExperimentalCoroutinesApi
     fun request(query: String, page: Int) {
+        if (isLoading() == true)
+            return
+
         isError(false)
         loading(true)
 
@@ -34,7 +37,7 @@ class SearchViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            ImageApi().fetch(query, page)
+            api.fetch(query, page)
                 .catch { cause ->
                     val message = cause.message
                     if (message == EMPTY_ITEM) emptyData()
@@ -64,6 +67,10 @@ class SearchViewModel : ViewModel() {
 
     private fun loading(bool: Boolean) {
         isLoading.value = bool
+    }
+
+    fun isLoading(): Boolean? {
+        return isLoading.value
     }
 
     private fun errorMessage(error: String?) {

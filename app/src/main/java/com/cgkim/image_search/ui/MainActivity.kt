@@ -9,7 +9,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cgkim.image_search.R
@@ -17,6 +16,7 @@ import com.cgkim.image_search.data.ImageModel
 import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.CustomRecyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 @ExperimentalCoroutinesApi
@@ -28,9 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mEditText: EditText
-    private val searchViewModel: SearchViewModel by lazy {
-        ViewModelProvider(this).get(SearchViewModel::class.java)
-    }
+    private val searchViewModel: SearchViewModel by viewModel()
 
     private var page = 1
 
@@ -64,6 +62,11 @@ class MainActivity : AppCompatActivity() {
                 val imm: InputMethodManager =
                     v.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
+
+                val model = searchViewModel
+                if (model.isLoading() == false) {
+                    model.request(mEditText.editableText.toString(), page)
+                }
             }
             true
         }
@@ -79,9 +82,9 @@ class MainActivity : AppCompatActivity() {
                 val lastVisibleItem =
                     (layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
 
-                if (layoutManager.itemCount <= lastVisibleItem + 3) {
+                val model = searchViewModel
+                if (layoutManager.itemCount <= lastVisibleItem + 3 && model.isLoading() == false) {
                     page++
-                    val model = searchViewModel
                     model.request(mEditText.editableText.toString(), page)
                 }
             }

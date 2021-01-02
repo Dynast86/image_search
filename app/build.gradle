@@ -66,6 +66,6 @@ dependencies {
     // GSON
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     // 의존성 주입(KOIN)
-//    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-//    testImplementation "org.koin:koin-test:$koin_version"
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 }
