@@ -1,13 +1,10 @@
 package com.cgkim.image_search.module
 
-import android.widget.GridView
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable.LARGE
 import com.bumptech.glide.Glide
-import com.cgkim.image_search.data.ImageDocument
 
 object ViewModelModule {
 
@@ -26,15 +23,5 @@ object ViewModelModule {
             .load(url)
             .placeholder(circularProgressDrawable)
             .into(imageView)
-    }
-
-    @JvmStatic
-    @BindingAdapter("itemList")
-    fun setBindItem(view: GridView, items: MutableLiveData<ArrayList<ImageDocument>>) {
-        view.adapter?.run {
-//            if (this is GridViewAdapter) {
-//                this.addItems(items)
-//            }
-        }
     }
 }
