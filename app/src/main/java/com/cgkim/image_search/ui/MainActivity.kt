@@ -1,21 +1,20 @@
 package com.cgkim.image_search.ui
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cgkim.image_search.R
 import com.cgkim.image_search.data.ImageModel
 import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.CustomRecyclerView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -29,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mEditText: EditText
     private val searchViewModel: SearchViewModel by viewModel()
+    private var queryTextChangeJob: Job? = null
 
     private var page = 1
 
@@ -106,16 +106,15 @@ class MainActivity : AppCompatActivity() {
     private fun initObserve() {
         searchViewModel.imageItems.observe(this, itemObserver)
         searchViewModel.editSearchTxt.observe(this, {
-            Handler(Looper.getMainLooper()).postDelayed({
-                try {
-                    page = 1
-                    if (it == mEditText.editableText.toString()) {
-                        searchViewModel.request(mEditText.editableText.toString(), page)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            queryTextChangeJob?.cancel()
+            queryTextChangeJob = lifecycleScope.launch(Dispatchers.Main) {
+                delay(DELAY)
+
+                page = 1
+                if (it == mEditText.editableText.toString()) {
+                    searchViewModel.request(mEditText.editableText.toString(), page)
                 }
-            }, DELAY)
+            }
         })
     }
 }
