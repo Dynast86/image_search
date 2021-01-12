@@ -5,6 +5,7 @@ import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable.LARGE
 import com.bumptech.glide.Glide
+import com.cgkim.image_search.R
 
 object ViewModelModule {
 
@@ -22,6 +23,7 @@ object ViewModelModule {
             .with(context)
             .load(url)
             .placeholder(circularProgressDrawable)
+            .error(R.drawable.ic_baseline_error_24)
             .into(imageView)
     }
 }
