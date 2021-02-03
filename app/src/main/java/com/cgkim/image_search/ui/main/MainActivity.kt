@@ -24,9 +24,6 @@ class MainActivity : AppCompatActivity() {
     private val listAdapter = SearchListAdapter()
 
     private lateinit var mRecyclerView: RecyclerView
-//    private lateinit var mEditText: EditText
-//
-//    private var queryTextChangeJob: Job? = null
 
     private var page = 1
 
@@ -39,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         initView()
-        initObserve()
     }
 
     private fun initView() {
@@ -69,25 +65,5 @@ class MainActivity : AppCompatActivity() {
     private fun hasNextPage(): Boolean {
         val model = searchViewModel.meta.value
         return model?.is_end != null
-    }
-
-    //
-//    private val itemObserver = Observer<List<ImageDocument>> {
-//        listAdapter.updateList(it)
-//    }
-
-    private fun initObserve() {
-//        searchViewModel.itemList.observe(this, itemObserver)
-//        searchViewModel.editSearchTxt.observe(this, {
-//            queryTextChangeJob?.cancel()
-//            queryTextChangeJob = lifecycleScope.launch(Dispatchers.Main) {
-//                delay(DELAY)
-//
-//                page = 1
-//                if (it == mEditText.editableText.toString()) {
-//                    searchViewModel.request(mEditText.editableText.toString(), page)
-//                }
-//            }
-//        })
     }
 }
