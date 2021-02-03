@@ -18,7 +18,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "host", '"https://dapi.kakao.com"'
         buildConfigField "String", "kakaoAK", '"07470f5f7a9b0aae0d7abd234804d64e"'
     }
 

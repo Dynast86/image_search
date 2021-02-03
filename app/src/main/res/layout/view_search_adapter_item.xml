@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="item"
+            type="com.cgkim.image_search.model.ImageDocument" />
+
+        <variable
+            name="handler"
+            type="com.cgkim.image_search.extension.ActionHandler" />
+    </data>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:onClick="@{(view) -> handler.onDetailClick(view, item)}"
+        bind:imageUrl="@{item.thumbnailUrl}"
+        tools:ignore="ContentDescription"
+        tools:srcCompat="@tools:sample/avatars">
+
+    </ImageView>
+</layout>
