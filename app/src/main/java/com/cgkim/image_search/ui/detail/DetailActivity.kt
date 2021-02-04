@@ -1,7 +1,6 @@
 package com.cgkim.image_search.ui.detail
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -37,16 +36,14 @@ class DetailActivity : AppCompatActivity() {
     private fun initData() {
         val document: ImageDocument? = intent.extras?.get("DATA") as ImageDocument?
 
-        detailViewModel.displaySiteName.apply {
-            if (!TextUtils.isEmpty(document?.displaySiteName)) {
-                value = getString(R.string.display_site_name, document?.displaySiteName)
-            }
+        document?.displaySiteName?.let {
+            detailViewModel.setDisplaySiteName(getString(R.string.display_site_name, it))
         }
-        detailViewModel.dateTime.apply {
-            if (!TextUtils.isEmpty(document?.datetime)) {
-                value = getString(R.string.date_time, document?.datetime)
-            }
+        document?.datetime?.let {
+            detailViewModel.setDateTime(getString(R.string.date_time, it))
         }
-        detailViewModel.imgUrl.value = document?.imageUrl
+        document?.imageUrl?.let {
+            detailViewModel.setImageUrl(it)
+        }
     }
 }
