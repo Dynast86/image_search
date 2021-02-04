@@ -13,12 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
-@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
-
-    companion object {
-        const val DELAY: Long = 1000
-    }
 
     private val searchViewModel: SearchViewModel by viewModel()
     private val listAdapter = SearchListAdapter()

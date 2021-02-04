@@ -19,8 +19,8 @@ class SearchViewModel(private val repository: Repository) : ViewModel() {
     private val _itemList = MutableLiveData<List<ImageDocument>>()
     val itemList: LiveData<List<ImageDocument>> = _itemList
 
-    var meta: MutableLiveData<ImageMeta> = MutableLiveData()
-    var queryText: MutableLiveData<String> = MutableLiveData()
+    val meta: MutableLiveData<ImageMeta> = MutableLiveData()
+    val queryText: MutableLiveData<String> = MutableLiveData()
 
     init {
         _itemList.value = list
