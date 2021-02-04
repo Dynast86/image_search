@@ -1,6 +1,5 @@
 package com.cgkim.image_search.ui.main
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,9 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.cgkim.image_search.model.ImageDocument
 import com.cgkim.image_search.model.ImageMeta
 import com.cgkim.image_search.repo.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SearchViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 

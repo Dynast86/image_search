@@ -3,8 +3,11 @@ package com.cgkim.image_search.ui.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class DetailViewModel : ViewModel() {
+@HiltViewModel
+class DetailViewModel @Inject constructor() : ViewModel() {
     private var _displaySiteName = MutableLiveData<String>()
     val displaySiteName: LiveData<String>
         get() = _displaySiteName
