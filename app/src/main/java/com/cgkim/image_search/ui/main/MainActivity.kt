@@ -1,6 +1,7 @@
 package com.cgkim.image_search.ui.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
@@ -8,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cgkim.image_search.R
 import com.cgkim.image_search.databinding.ActivityMainBinding
 import com.cgkim.image_search.ui.adapter.SearchListAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val searchViewModel: SearchViewModel by viewModel()
+    private val searchViewModel: SearchViewModel by viewModels()
     private val listAdapter = SearchListAdapter()
 
     private lateinit var mRecyclerView: RecyclerView

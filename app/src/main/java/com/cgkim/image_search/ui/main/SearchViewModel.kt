@@ -1,5 +1,6 @@
 package com.cgkim.image_search.ui.main
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,9 @@ import com.cgkim.image_search.model.ImageMeta
 import com.cgkim.image_search.repo.Repository
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val repository: Repository) : ViewModel() {
+class SearchViewModel @ViewModelInject constructor(
+    private val repository: Repository
+) : ViewModel() {
 
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val errorMessage: MutableLiveData<String> = MutableLiveData()

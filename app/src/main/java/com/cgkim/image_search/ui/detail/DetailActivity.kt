@@ -2,15 +2,18 @@ package com.cgkim.image_search.ui.detail
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.cgkim.image_search.R
 import com.cgkim.image_search.databinding.ActivityImagePopupBinding
 import com.cgkim.image_search.model.ImageDocument
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
 
-    private val detailViewModel = DetailViewModel()
+    private val detailViewModel : DetailViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

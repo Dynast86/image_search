@@ -4,7 +4,7 @@
 
 ## Libraries
 - 언어 : Kotlin
-- 의존성주입 : Koin
+- 의존성주입 : Dagger
 - 통신 : Retrofit2, Corutines
 - 이미지 : Glide
 - JetPack
