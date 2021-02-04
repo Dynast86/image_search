@@ -11,3 +11,5 @@
   - LiveData
   - MVVM
   - DataBinding
+  
+# Grgit를 이용하여 버전 수정 
